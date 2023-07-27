@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 const bodyparser = require('body-parser');
 const errorController = require('./controllers/error');
 const dotenv = require('dotenv');
@@ -12,6 +13,11 @@ const app = express();
 const Users = require('./models/user');
 
 const userRoutes = require('./routes/user');
+
+app.use(cors({
+    origin: "*",
+    credentials: true
+}));
 
 app.use(bodyparser.json());
 

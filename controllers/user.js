@@ -1,5 +1,7 @@
 const Users = require('../models/user');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const secretKey = process.env.TOKEN_SECRET;
 
 function isStringInvalid(string){
     if(string === undefined || string.length === 0){
@@ -28,6 +30,44 @@ const signUp = async (req, res)=> {
     }
 }
 
+const generateAccessToken = (id) =>{
+    return jwt.sign({userId:id}, 'secretkey');
+}
+  
+
+const login = async (req, res) =>{
+    try{
+        const { email, password } = req.body;
+
+        if(isStringInvalid(email) || isStringInvalid(password)){
+            return res.status(400).json({ message: 'email or password is wrong', success: false });
+        }
+
+        const user = await Users.findAll({where:{ email}});
+        if(user.length>0){
+            bcrypt.compare(password, user[0].password, (err, result)=>{
+                if (err) {
+                    throw new Error('Something went wrong')
+                  }
+                if(result === true){
+                    return res.status(200).json({success: true, message: 'User logged in successfully', token: generateAccessToken(user[0].id)});
+                }
+                else{
+                    return res.status(400).json({success: false, message: 'Password is incorrect'});
+                }
+            })
+
+        }else{
+            return res.status(404).json({success: false, message: 'User does not exist'});
+        }
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+
 module.exports = {
-    signUp
+    signUp,
+    login,
+    generateAccessToken
 }

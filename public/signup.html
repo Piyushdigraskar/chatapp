@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <title>signup Page</title>
 </head>
 <body>
     <H1>Signup page</H1>
     <br>
-    <form >
+    <form onsubmit="saveToLocal(event)">
         <label for="name">Name:</label>
         <br>
         <input type="name" name="name" required>

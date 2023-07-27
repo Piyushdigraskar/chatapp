@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <title>Login Page</title>
+</head>
+<body>
+    <h1>Login page</h1>
+    <br>
+    <form onsubmit="saveToLocal(event)">
+        <label for="email">Email:</label>
+        <br>
+        <input type="email" name="email" required>
+        <br>
+        <label for="password">Password:</label>
+        <br>
+        <input type="password" name="password" required>
+        <br>
+        <button>Login</button>
+    </form>
+    <a href="./signup.html">Signup Now</a>
+    <script src="./login.js"></script>
+</body>
+</html>

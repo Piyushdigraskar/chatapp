@@ -11,8 +11,10 @@ const sequelize = require('./util/database');
 const app = express();
 
 const Users = require('./models/user');
+const Messages = require('./models/messages');
 
 const userRoutes = require('./routes/user');
+const messageRoutes = require('./routes/messages');
 
 app.use(cors({
     origin: "*",
@@ -21,7 +23,8 @@ app.use(cors({
 
 app.use(bodyparser.json());
 
-app.use('/user', userRoutes);
+app.use(userRoutes);
+app.use(messageRoutes);
 
 app.use(errorController.get404);
 

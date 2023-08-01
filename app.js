@@ -1,15 +1,16 @@
 const express = require('express');
 const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config();
 const cors = require('cors');
 const bodyparser = require('body-parser');
 const errorController = require('./controllers/error');
 const Users = require('./models/user');
 const Messages = require('./models/messages');
-const Groups = require('./models/group');
+const Group = require('./models/group');
 const GroupMember = require('./models/groupmember')
 
-const dotenv = require('dotenv');
-dotenv.config();
+
 
 const sequelize = require('./util/database');
 
@@ -38,7 +39,7 @@ Users.hasMany(Messages, { foreignKey: 'userId' });
 Messages.belongsTo(Users, { foreignKey: 'userId' });
 
 Group.belongsTo(Users, { foreignKey: 'created_by' });
-GroupMember.belongsTo(Users, { foreignKey: 'user_id' });
+GroupMember.belongsTo(Users, { foreignKey: 'userId' });
 
 GroupMember.belongsTo(Group, { foreignKey: 'group_id' });
 Group.hasMany(GroupMember, { foreignKey: 'group_id' });

@@ -3,26 +3,26 @@ const sequelize = require('../util/database');
 const { Op } = require('sequelize');
 const Users = require('../models/user');
 
-const addMessage = async(req, res, next)=>{
+const addMessage = async (req, res, next) => {
     try {
         const msg = req.body.message;
         const data = await Messages.create({
-            message:msg,
-            userId:req.user.id,
+            message: msg,
+            userId: req.user.id,
         });
-        res.json({ datavalues: data});
-        
+        res.json({ datavalues: data });
+
     } catch (err) {
         console.log(err);
-        
+
     }
 }
 
-const getMessage = async(req, res, next)=>{
+const getMessage = async (req, res, next) => {
     try {
         const lastMsgId = req.query.lastmsgid || 0;
         const messages = await Messages.findAll({
-            where:{
+            where: {
                 id: { [Op.gt]: lastMsgId },
                 groupId: null
             },
@@ -34,13 +34,54 @@ const getMessage = async(req, res, next)=>{
             ]
         });
 
-        const formattedMessages = messages.map((message) =>({
-            id:message.id,
-            message:message.message,
+        const formattedMessages = messages.map((message) => ({
+            id: message.id,
+            message: message.message,
             sender: message.user.name,
             groupId: message.groupId,
         }))
-        res.status(200).json({ messages:formattedMessages });
+        res.status(200).json({ messages: formattedMessages });
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const addGroupMessage = async (req, res, next) => {
+    try {
+        const groupId = req.params.groupId;
+        const message = req.body.message.message;
+
+        const data = await Messages.create({
+            message,
+            userId: req.user.id,
+            group_id: groupId
+        })
+        res.json({ datavalues: data });
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+const getGroupMessages = async (req,res,next)=>{
+    try {
+        const groupId = req.params.groupId;
+
+        const messages = await Messages.findAll({
+            where:{ group_id: groupId},
+            include:[
+                {
+                    model:Users,
+                    attributes: ['name'],
+                },
+            ],
+            order: [['id', 'ASC']]
+        })
+        const formattedMessages = messages.map((message)=>({
+            id: message.id,
+            message: message.message,
+            sender: message.user.name
+        }));
+        res.json({ messages: formattedMessages});
     } catch (err) {
         console.log(err);
     }
@@ -48,5 +89,7 @@ const getMessage = async(req, res, next)=>{
 
 module.exports = {
     addMessage,
-    getMessage
+    getMessage,
+    addGroupMessage,
+    getGroupMessages
 }

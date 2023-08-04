@@ -5,10 +5,15 @@ const Users = require('../models/user');
 
 const addMessage = async (req, res, next) => {
     try {
-        const msg = req.body.message;
+
+        //console.log('THis is', req.body)
+        //console.log('THis is', req.body.message)
+        
+        const msg = req.body.message.message;
+        //console.log('THis is', msg)
         const data = await Messages.create({
             message: msg,
-            userId: req.user.id,
+            user_id: req.user.id,
         });
         res.json({ datavalues: data });
 
@@ -24,7 +29,7 @@ const getMessage = async (req, res, next) => {
         const messages = await Messages.findAll({
             where: {
                 id: { [Op.gt]: lastMsgId },
-                groupId: null
+                group_id: null
             },
             include: [
                 {
@@ -38,7 +43,7 @@ const getMessage = async (req, res, next) => {
             id: message.id,
             message: message.message,
             sender: message.user.name,
-            groupId: message.groupId,
+            group_id: message.group_id,
         }))
         res.status(200).json({ messages: formattedMessages });
     } catch (err) {
@@ -53,7 +58,7 @@ const addGroupMessage = async (req, res, next) => {
 
         const data = await Messages.create({
             message,
-            userId: req.user.id,
+            user_id: req.user.id,
             group_id: groupId
         })
         res.json({ datavalues: data });

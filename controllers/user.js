@@ -1,7 +1,7 @@
 const Users = require('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const secretKey = process.env.TOKEN_SECRET;
+const secretkey = process.env.TOKEN_SECRET;
 
 function isStringInvalid(string){
     if(string === undefined || string.length === 0){
@@ -66,8 +66,46 @@ const login = async (req, res) =>{
     }
 }
 
+const getUsers = async (req, res, next) =>{
+    try {
+        const users = await Users.findAll();
+        res.status(200).json({ users });
+        
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const getUserIdName = async (req,res,next) =>{
+    try {
+        const name = req.user.name;
+        res.status(200).json({ name });
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const deleteUser = async(req, res, next) =>{
+    try {
+        const userId = req.params.userId;
+        const user = await Users.findOne({ where: {id: userId}});
+
+        if(!user){
+            return res.status(404).json({error: "User not found"});
+        }
+
+        await user.destroy();
+        res.status(200).json({message: "user deleted successfully"});
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 module.exports = {
     signUp,
     login,
-    generateAccessToken
+    generateAccessToken,
+    getUsers,
+    getUserIdName,
+    deleteUser
 }
